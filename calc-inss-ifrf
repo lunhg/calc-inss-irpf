@@ -1,0 +1,104 @@
+#!/usr/bin/python
+
+from optparse import OptionParser
+
+# PROGRAMA PRINCIPAL
+PROG = "calc-inss-ifpr"
+VERSION = "0.0.1"
+description = "Calcula contribuição para inss e o quanto tem que pagar de imposto de renda"
+parser = OptionParser(usage='usage: %prog [OPTIONS, [ARGS]]',
+                      version='%s %s' % (PROG, VERSION),
+                      description=description)
+
+# Opcoes do programa
+parser.add_option("-s", "--salario", action=None, help="salario arguments. Ex.: --salario 1000")
+parser.add_option("-b", "--base", action=None, help="salario  do calendario anterior. Ex.: --base 1000")
+
+# Capturar os argumentos passados pelo parser
+(options, args) = parser.parse_args()
+
+
+# mudar tipos
+salario = float(options.salario)
+salario_base = float(options.base)
+
+print("Salario: %.2f" % salario)
+print("Salario base %.2f" % salario_base)
+
+# Valores:
+def inss(**kwargs):
+    total = kwargs.get('total')
+    pc = kwargs.get('porcentagem')
+    result = total - (total * pc)
+    print("INSS: Contribuir %.2f" % result)
+
+def irpf(**kwargs):
+    total=kwargs.get('total')
+    pc=kwargs.get('porcentagem')
+    deduzir=kwargs.get('deduzir')
+    result = (total * pc) - deduzir
+    print("IRPF: Pagar %.2f" % result)
+
+def show_inss():
+    if(salario < 1045.0):
+        inss(
+            total=salario,
+            porcentagem=0.075
+        )
+        
+    if(salario > 1045.0 and salario <= 2089.60):
+        inss(
+            total=salario,
+            porcentagem=0.09
+        )
+        
+    if(salario > 2089.60 and salario <= 2089.60):
+        inss(
+            total=salario,
+            porcentagem=0.12
+        )
+
+    if(salario > 3134.41 and salario <= 6101.60):
+        inss(
+            total=salario,
+            porcentagem=0.14
+        )
+
+def show_irpf():
+    if(salario_base < 1903.99):
+        irpf(
+            total=1,
+            porcentagem=1,
+            deduzir=1
+        )
+
+    if(salario_base > 1903.99 and salario_base <=2826.65):
+        irpf(
+            total=salario_base,
+            porcentagem=0.075,
+            deduzir=142.80
+        )
+    
+    if(salario_base > 2826.65 and salario_base <= 3751.05):
+        irpf(
+            total=salario_base,
+            porcentagem=0.09,
+            deduzir=354.80
+        )
+
+    if(salario_base > 3751.05 and salario_base <= 4664.68):
+        irpf(
+            total=salario_base,
+            porcentagem=0.12,
+            deduzir=636.13
+        )
+     
+    if(salario_base > 4664.68):
+        irpf(
+            total=salario_base,
+            porcentagem=0.075,
+            deduzir=869.36
+        )
+
+show_inss()
+show_irpf()
