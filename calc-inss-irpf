@@ -22,83 +22,94 @@ parser.add_option("-b", "--base", action=None, help="salario  do calendario ante
 salario = float(options.salario)
 salario_base = float(options.base)
 
-print("Salario: %.2f" % salario)
-print("Salario base %.2f" % salario_base)
 
-# Valores:
-def inss(**kwargs):
-    total = kwargs.get('total')
-    pc = kwargs.get('porcentagem')
-    result = total - (total * pc)
-    print("INSS: Contribuir %.2f" % result)
+class INSS(object):
 
-def irpf(**kwargs):
-    total=kwargs.get('total')
-    pc=kwargs.get('porcentagem')
-    deduzir=kwargs.get('deduzir')
-    result = (total * pc) - deduzir
-    print("IRPF: Pagar %.2f" % result)
+    def __init__(self, **kwargs):
+        self.total = kwargs.get('total')
+        self.porcentagem = kwargs.get('porcentagem')
+
+    def execute(self):
+        result = self.total - (self.total * self.porcentagem)
+        return result
+
+class IRPF(object):
+
+    def __init__(self, **kwargs):
+        self.total = kwargs.get('total')
+        self.porcentagem = kwargs.get('porcentagem')
+        self.deduzir = kwargs.get('deduzir')
+
+    def execute(self):
+        result = (self.total * self.porcentagem) - self.deduzir
+        return result
+
 
 def show_inss():
     if(salario < 1045.0):
-        inss(
+        inss = INSS(
             total=salario,
             porcentagem=0.075
         )
-        
+
+
     if(salario > 1045.0 and salario <= 2089.60):
-        inss(
+        inss = INSS(
             total=salario,
             porcentagem=0.09
         )
         
     if(salario > 2089.60 and salario <= 2089.60):
-        inss(
+        inss = INSS(
             total=salario,
             porcentagem=0.12
         )
 
     if(salario > 3134.41 and salario <= 6101.60):
-        inss(
+        inss = INSS(
             total=salario,
             porcentagem=0.14
         )
 
+    print("INSS: Contribuir com %s reais" % str(inss.execute()))
+
 def show_irpf():
     if(salario_base < 1903.99):
-        irpf(
+        irpf = IRPF(
             total=1,
             porcentagem=1,
             deduzir=1
         )
 
     if(salario_base > 1903.99 and salario_base <=2826.65):
-        irpf(
+        irpf = IRPF(
             total=salario_base,
             porcentagem=0.075,
             deduzir=142.80
         )
     
     if(salario_base > 2826.65 and salario_base <= 3751.05):
-        irpf(
+        irpf = IRPF(
             total=salario_base,
             porcentagem=0.09,
             deduzir=354.80
         )
 
     if(salario_base > 3751.05 and salario_base <= 4664.68):
-        irpf(
+        irpf = IRPF(
             total=salario_base,
             porcentagem=0.12,
             deduzir=636.13
         )
      
     if(salario_base > 4664.68):
-        irpf(
+        irpf = IRPF(
             total=salario_base,
             porcentagem=0.075,
             deduzir=869.36
         )
+
+    print("IRPF: Pagar %s reais" % str(irpf.execute()))
 
 show_inss()
 show_irpf()
